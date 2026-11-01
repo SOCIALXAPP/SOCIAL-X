@@ -21,7 +21,7 @@
 <script>
 // Add your Supabase Project URL and PUBLIC publishable/anon key here on your own device.
 const SUPABASE_URL = 'https://glyetyeqhgfgczqibcnr.supabase.co';
-const SUPABASE_PUBLIC_KEY = 'PASTE_SUPABASE_PUBLISHABLE_KEY_HERE';
+const SUPABASE_PUBLIC_KEY = "PASTE_SUPABASE_PUBLISHABLE_KEY_HERE";';
 let sb=null, currentUser=null, postsCache=[], selectedPhoto=null, avatarPhoto=null, liked=new Set();
 const $=id=>document.getElementById(id);
 function note(id,msg,kind=''){const el=$(id);el.textContent=msg;el.className='small '+(kind==='error'?'error':kind==='success'?'success':'muted');}
