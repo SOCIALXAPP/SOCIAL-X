@@ -1,49 +1,392 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#090d1e"><title>SOCIAL X</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOCIAL X</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--bg:#090d1e;--panel:#121a32;--panel2:#192342;--line:#283455;--text:#f4f6ff;--muted:#aab4d0;--pink:#f04ca5;--blue:#6b78ff;--cyan:#36d6e7}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#24265a 0,#090d1e 55%);color:var(--text);font:15px system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}button,input,textarea{font:inherit}button{cursor:pointer;border:0}.wrap{max-width:760px;margin:auto;padding:0 14px 90px}.top{position:sticky;top:0;z-index:5;background:#090d1eeF;backdrop-filter:blur(14px);padding:13px 0;border-bottom:1px solid #ffffff12;display:flex;align-items:center;justify-content:space-between}.logo{font-size:25px;font-weight:900;letter-spacing:1px;background:linear-gradient(90deg,#55d8ff,#a27aff,#ff58b2);color:transparent;background-clip:text}.pill{border:1px solid var(--line);background:var(--panel);color:white;border-radius:22px;padding:9px 14px}.panel{background:linear-gradient(145deg,#151e39,#10172c);border:1px solid var(--line);border-radius:18px;margin:15px 0;padding:15px;box-shadow:0 10px 35px #0002}.auth{max-width:460px;margin:32px auto}.auth h2,.panel h2{margin:0 0 8px}.muted{color:var(--muted)}.field{width:100%;background:#0b1227;border:1px solid var(--line);border-radius:12px;padding:12px;color:white;margin:7px 0;outline:none}.field:focus{border-color:var(--blue)}.primary{background:linear-gradient(100deg,var(--blue),var(--pink));color:white;font-weight:700;border-radius:12px;padding:12px 18px}.full{width:100%;margin-top:8px}.link{background:none;color:#9eabff;padding:10px}.row{display:flex;gap:9px;align-items:center}.between{justify-content:space-between}.stories{display:flex;gap:14px;overflow:auto;padding:4px 0 10px}.story{text-align:center;min-width:62px;font-size:12px;color:var(--muted)}.bubble{width:58px;height:58px;border-radius:50%;padding:3px;margin:auto auto 5px;background:linear-gradient(135deg,#40d8ff,#9b64ff,#ff55ae)}.bubble span{display:grid;place-items:center;width:100%;height:100%;border:3px solid #121a32;border-radius:50%;background:#273253;font-size:22px;color:white}.composer textarea{min-height:76px;resize:vertical}.post-head{display:flex;align-items:center;gap:10px}.avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#45d7ee,#8d61ff);font-weight:800;overflow:hidden}.avatar img{width:100%;height:100%;object-fit:cover}.post-image{width:100%;max-height:560px;object-fit:cover;border-radius:13px;margin-top:12px;background:#080d1c}.actions{display:flex;gap:8px;margin-top:12px}.actions button{background:#202b4b;color:#e9edff;border-radius:20px;padding:8px 12px}.actions button.active{color:#ff72b5}.comment{padding:8px 0;border-top:1px solid #ffffff12}.bottom{position:fixed;bottom:0;left:0;right:0;z-index:8;background:#0c1225f2;backdrop-filter:blur(14px);border-top:1px solid var(--line);display:flex;justify-content:center;gap:clamp(10px,5vw,38px);padding:10px 8px calc(10px + env(safe-area-inset-bottom))}.bottom button{background:none;color:#aeb8d5;font-size:12px;display:grid;gap:3px;justify-items:center;min-width:42px}.bottom button b{font-size:20px}.bottom button.active{color:#ff72b5}.hidden{display:none!important}.notice{padding:12px;border-radius:12px;background:#202b4b;color:#dbe4ff;margin:10px 0}.error{color:#ff9ab9}.success{color:#83edc0}.section-title{font-weight:800;margin:18px 0 6px}.small{font-size:12px}.empty{text-align:center;padding:25px;color:var(--muted)}
-</style></head>
-<body><div class="wrap">
-<header class="top"><div class="logo">SOCIAL X</div><div class="row"><span id="userLabel" class="muted small"></span><button id="topAuth" class="pill" onclick="showAuth()">Login</button></div></header>
-<div id="authView" class="panel auth"><h2>Welcome to SOCIAL X</h2><p class="muted">Connect with the world.</p><div id="authNotice" class="notice hidden"></div><input id="authEmail" class="field" type="email" autocomplete="email" placeholder="Email address"><input id="authPassword" class="field" type="password" autocomplete="current-password" placeholder="Password (minimum 6 characters)"><input id="authUsername" class="field" placeholder="Username (for sign up)"><button class="primary full" onclick="signIn()">Log in</button><button class="primary full" onclick="signUp()">Create account</button><p class="muted small">Use your email to create an account. You may need to confirm it from your inbox.</p></div>
-<main id="appView" class="hidden">
-<div class="section-title">Stories</div><div class="panel stories"><div class="story"><div class="bubble"><span>＋</span></div>Your story</div><div class="story"><div class="bubble"><span>A</span></div>Alex</div><div class="story"><div class="bubble"><span>P</span></div>Priya</div><div class="story"><div class="bubble"><span>R</span></div>Rahul</div><div class="story"><div class="bubble"><span>S</span></div>Sam</div></div>
-<section id="homeSection"><div class="panel composer"><div class="row"><div class="avatar" id="myAvatar">X</div><strong id="composerName">Create a post</strong></div><textarea id="postCaption" class="field" placeholder="What's happening? Share an update..."></textarea><div class="row between"><label class="pill">📷 Add photo <input id="postFile" type="file" accept="image/*" hidden></label><button class="primary" onclick="createPost()">Share post</button></div><div id="postNotice" class="small muted"></div></div><div id="feed"><div class="empty">Loading your feed...</div></div></section>
-<section id="profileSection" class="hidden"><div class="panel"><h2>Your profile</h2><input id="displayName" class="field" placeholder="Display name"><input id="username" class="field" placeholder="Username"><textarea id="bio" class="field" placeholder="Bio"></textarea><label class="pill">Change avatar <input id="avatarFile" type="file" accept="image/*" hidden></label><button class="primary" onclick="saveProfile()">Save profile</button><div id="profileNotice" class="small muted"></div></div></section>
-<section id="exploreSection" class="hidden"><div class="panel"><h2>Explore</h2><input id="searchBox" class="field" placeholder="Search posts or captions" oninput="filterFeed()"><p class="muted small">Search currently filters posts loaded in your feed.</p></div><div id="exploreFeed"></div></section>
-<section id="messagesSection" class="hidden"><div class="panel"><h2>Messages</h2><p class="muted">Messaging backend will be connected in the next phase. Your messages table is already created.</p></div></section>
-<section id="settingsSection" class="hidden"><div class="panel"><h2>Settings</h2><p class="muted">Account: <span id="settingsEmail"></span></p><button class="pill" onclick="signOut()">Log out</button></div></section>
-</main></div>
-<nav id="bottomNav" class="bottom hidden"><button class="active" data-tab="home"><b>⌂</b>Home</button><button onclick="focusComposer()"><b>＋</b>Post</button><button data-tab="explore"><b>⌕</b>Explore</button><button data-tab="messages"><b>✉</b>Messages</button><button data-tab="profile"><b>◉</b>Profile</button><button data-tab="settings"><b>⚙</b>Settings</button></nav>
+*{box-sizing:border-box}
+body{margin:0;background:#090d1c;color:#fff;font-family:Arial,sans-serif}
+header{padding:18px;background:#11182c;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5}
+.logo{font-size:25px;font-weight:900;color:#a78bfa}
+button{border:0;border-radius:10px;padding:11px 15px;background:#7857ee;color:white;font-weight:bold;cursor:pointer}
+button:disabled{opacity:.5}
+input,textarea{width:100%;padding:13px;margin:7px 0;background:#151e35;border:1px solid #34405d;border-radius:10px;color:white}
+main{max-width:680px;margin:20px auto;padding:0 13px 90px}
+.card{background:#131b30;border:1px solid #263451;border-radius:15px;padding:16px;margin-bottom:16px}
+h2,h3{margin-top:5px}
+.muted{color:#9ba9c5;font-size:13px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.row button{flex:1}
+#auth{max-width:430px;margin:35px auto}
+#feed img{width:100%;max-height:480px;object-fit:cover;border-radius:12px;margin-top:10px}
+nav{position:fixed;bottom:0;left:0;right:0;background:#11182c;display:flex;justify-content:space-around;padding:12px 3px;border-top:1px solid #34405d;z-index:10}
+nav button{background:transparent;padding:8px 5px;font-size:12px}
+.hidden{display:none!important}
+#status{padding:10px;text-align:center;color:#fbbf24;font-size:13px}
+.avatar{width:38px;height:38px;border-radius:50%;background:#7657ee;display:grid;place-items:center;font-weight:bold}
+hr{border-color:#263451}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">SOCIAL X ✦</div>
+  <button onclick="showAuth()">Login / Join</button>
+</header>
+
+<div id="status">Welcome to SOCIAL X</div>
+
+<section id="auth" class="card hidden">
+  <h2 id="authTitle">Create your account</h2>
+  <input id="email" type="email" placeholder="Email address">
+  <input id="password" type="password" placeholder="Password (minimum 6 characters)">
+  <input id="username" placeholder="Username (for signup)">
+  <button style="width:100%" onclick="signUp()">Create account</button>
+  <button style="width:100%;margin-top:8px;background:#34405d" onclick="signIn()">Login</button>
+  <button style="width:100%;margin-top:8px;background:#34405d" onclick="signOut()">Logout</button>
+  <p class="muted">Signup ke baad email verification ki zaroorat ho sakti hai.</p>
+</section>
+
+<main>
+  <section class="card">
+    <div class="row">
+      <div class="avatar">X</div>
+      <div>
+        <b id="welcome">Welcome to SOCIAL X</b>
+        <div class="muted" id="userEmail">Login to start sharing</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="composer">
+    <h3>Share something ✨</h3>
+    <textarea id="caption" rows="3" placeholder="What's happening?"></textarea>
+    <input id="photo" type="file" accept="image/*">
+    <button style="width:100%" onclick="createPost()">＋ Publish Post</button>
+    <p class="muted">Text aur image posts. Login required.</p>
+  </section>
+
+  <section class="card">
+    <h3>Explore SOCIAL X</h3>
+    <input id="search" placeholder="Search posts..." oninput="filterPosts()">
+    <button onclick="loadPosts()">Refresh Feed ↻</button>
+  </section>
+
+  <h2 id="feedHeading">Home Feed</h2>
+  <div id="feed"></div>
+
+  <section class="card" id="profile">
+    <h3>Your Profile</h3>
+    <input id="displayName" placeholder="Display name">
+    <input id="bio" placeholder="About you">
+    <button onclick="saveProfile()">Save Profile</button>
+  </section>
+
+  <section class="card">
+    <h3>More SOCIAL X features</h3>
+    <p class="muted">Stories · Reels · Messages · Notifications · Following</p>
+    <p class="muted">In features ko agle backend update mein connect karna hoga.</p>
+  </section>
+</main>
+
+<nav>
+  <button onclick="goHome()">⌂<br>Home</button>
+  <button onclick="document.getElementById('composer').scrollIntoView()">＋<br>Post</button>
+  <button onclick="document.getElementById('search').focus()">⌕<br>Explore</button>
+  <button onclick="showMessages()">✉<br>Messages</button>
+  <button onclick="document.getElementById('profile').scrollIntoView()">●<br>Profile</button>
+</nav>
+
 <script>
-// Add your Supabase Project URL and PUBLIC publishable/anon key here on your own device.
-const SUPABASE_URL = 'https://glyetyeqhgfgczqibcnr.supabase.co';
-const SUPABASE_PUBLIC_KEY = "PASTE_SUPABASE_PUBLISHABLE_KEY_HERE";';
-let sb=null, currentUser=null, postsCache=[], selectedPhoto=null, avatarPhoto=null, liked=new Set();
-const $=id=>document.getElementById(id);
-function note(id,msg,kind=''){const el=$(id);el.textContent=msg;el.className='small '+(kind==='error'?'error':kind==='success'?'success':'muted');}
-function showAuth(msg=''){ $('authView').classList.remove('hidden');$('appView').classList.add('hidden');$('bottomNav').classList.add('hidden');if(msg){$('authNotice').textContent=msg;$('authNotice').classList.remove('hidden');}}
-function showApp(){ $('authView').classList.add('hidden');$('appView').classList.remove('hidden');$('bottomNav').classList.remove('hidden');$('topAuth').textContent='Log out';$('topAuth').onclick=signOut;$('userLabel').textContent=currentUser?.email||'';$('settingsEmail').textContent=currentUser?.email||'';$('composerName').textContent=currentUser?.email?.split('@')[0]||'Your post';loadProfile();loadFeed();}
-function configured(){if(!window.supabase){showAuth('Could not load Supabase library. Check your internet connection.');return false;}if(SUPABASE_PUBLIC_KEY.includes('PASTE_')){showAuth('Setup needed: add your Supabase publishable key in this file first.');return false;}if(!sb)sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLIC_KEY);return true;}
-async function signIn(){if(!configured())return;const email=$('authEmail').value.trim(),password=$('authPassword').value;if(!email||!password){showAuth('Enter your email and password.');return;}const {error}=await sb.auth.signInWithPassword({email,password});if(error){showAuth(error.message);return;}const {data}=await sb.auth.getUser();currentUser=data.user;showApp();}
-async function signUp(){if(!configured())return;const email=$('authEmail').value.trim(),password=$('authPassword').value,username=$('authUsername').value.trim();if(!email||password.length<6){showAuth('Enter a valid email and password of at least 6 characters.');return;}const {data,error}=await sb.auth.signUp({email,password,options:{data:{username}}});if(error){showAuth(error.message);return;}if(!data.session){showAuth('Account created. Check your email to confirm, then log in.');return;}currentUser=data.user;await ensureProfile(username);showApp();}
-async function signOut(){if(sb)await sb.auth.signOut();currentUser=null;showAuth('You are logged out.');$('topAuth').textContent='Login';$('topAuth').onclick=showAuth;}
-async function ensureProfile(username=''){if(!currentUser)return;const row={id:currentUser.id,username:username||currentUser.email.split('@')[0],display_name:username||currentUser.email.split('@')[0]};const {error}=await sb.from('profiles').upsert(row,{onConflict:'id'});if(error)console.warn('Profile setup:',error.message);}
-async function loadProfile(){if(!currentUser)return;const {data,error}=await sb.from('profiles').select('*').eq('id',currentUser.id).maybeSingle();if(error){note('profileNotice','Profile read error: '+error.message,'error');return;}if(data){$('displayName').value=data.display_name||'';$('username').value=data.username||'';$('bio').value=data.bio||'';if(data.avatar_url){$('myAvatar').innerHTML='<img src="'+escapeAttr(data.avatar_url)+'">';}}}
-async function saveProfile(){if(!currentUser)return;let avatarUrl=null;if(avatarPhoto){const path=currentUser.id+'/avatar-'+Date.now()+'.'+ext(avatarPhoto.name);const {error:upErr}=await sb.storage.from('avatars').upload(path,avatarPhoto,{upsert:true,contentType:avatarPhoto.type});if(upErr){note('profileNotice','Avatar upload failed: '+upErr.message,'error');return;}avatarUrl=sb.storage.from('avatars').getPublicUrl(path).data.publicUrl;}const row={id:currentUser.id,display_name:$('displayName').value.trim(),username:$('username').value.trim(),bio:$('bio').value.trim()};if(avatarUrl)row.avatar_url=avatarUrl;const {error}=await sb.from('profiles').upsert(row,{onConflict:'id'});note('profileNotice',error?error.message:'Profile saved.',error?'error':'success');if(!error){avatarPhoto=null;loadProfile();}}
-$('postFile').addEventListener('change',e=>{selectedPhoto=e.target.files[0]||null;note('postNotice',selectedPhoto?'Selected: '+selectedPhoto.name:'');});$('avatarFile').addEventListener('change',e=>{avatarPhoto=e.target.files[0]||null;});
-async function createPost(){if(!currentUser)return;const caption=$('postCaption').value.trim();if(!caption&&!selectedPhoto){note('postNotice','Write something or choose a photo.','error');return;}let mediaUrl=null,mediaType=null;if(selectedPhoto){const path=currentUser.id+'/post-'+Date.now()+'.'+ext(selectedPhoto.name);const {error:upErr}=await sb.storage.from('post-media').upload(path,selectedPhoto,{contentType:selectedPhoto.type});if(upErr){note('postNotice','Photo upload failed: '+upErr.message,'error');return;}mediaUrl=sb.storage.from('post-media').getPublicUrl(path).data.publicUrl;mediaType='image';}const row={user_id:currentUser.id,caption,media_url:mediaUrl,media_type:mediaType};const {error}=await sb.from('posts').insert(row);if(error){note('postNotice','Post failed: '+error.message,'error');return;}$('postCaption').value='';$('postFile').value='';selectedPhoto=null;note('postNotice','Posted successfully.','success');loadFeed();}
-async function loadFeed(){const feed=$('feed');feed.innerHTML='<div class="empty">Loading posts...</div>';const {data,error}=await sb.from('posts').select('*').order('created_at',{ascending:false}).limit(50);if(error){feed.innerHTML='<div class="panel error">Could not load posts: '+escapeHtml(error.message)+'</div>';return;}postsCache=data||[];if(postsCache.length){const ids=postsCache.map(p=>p.id);const {data:ls}=await sb.from('likes').select('post_id,user_id').in('post_id',ids);liked=new Set((ls||[]).filter(x=>x.user_id===currentUser.id).map(x=>String(x.post_id)));}renderPosts(feed,postsCache);}
-function renderPosts(target,items){if(!items.length){target.innerHTML='<div class="panel empty">No posts yet. Be the first to share something!</div>';return;}target.innerHTML=items.map(p=>{const name=p.profiles?.display_name||p.profiles?.username||'SOCIAL X member';const img=p.media_url?'<img class="post-image" src="'+escapeAttr(p.media_url)+'" alt="Post image" loading="lazy">':'';return '<article class="panel"><div class="post-head"><div class="avatar">'+escapeHtml(name.slice(0,1).toUpperCase())+'</div><div><strong>'+escapeHtml(name)+'</strong><div class="muted small">'+(p.created_at?new Date(p.created_at).toLocaleString():'')+'</div></div></div><p>'+escapeHtml(p.caption||'')+'</p>'+img+'<div class="actions"><button class="'+(liked.has(String(p.id))?'active':'')+'" onclick="toggleLike('+Number(p.id)+')">♥ Like</button><button onclick="toggleComments('+Number(p.id)+')">💬 Comments</button></div><div id="comments-'+Number(p.id)+'" class="hidden"><div class="comment-list"></div><div class="row"><input class="field" id="comment-input-'+Number(p.id)+'" placeholder="Write a comment..."><button class="pill" onclick="addComment('+Number(p.id)+')">Send</button></div></div></article>';}).join('');}
-async function toggleLike(id){const exists=liked.has(String(id));if(exists){const {error}=await sb.from('likes').delete().eq('post_id',id).eq('user_id',currentUser.id);if(error){alert(error.message);return;}liked.delete(String(id));}else{const {error}=await sb.from('likes').insert({post_id:id,user_id:currentUser.id});if(error){alert(error.message);return;}liked.add(String(id));}renderPosts($('feed'),postsCache);}
-async function toggleComments(id){const box=$('comments-'+id);box.classList.toggle('hidden');if(!box.classList.contains('hidden')){const list=box.querySelector('.comment-list');list.innerHTML='Loading...';const {data,error}=await sb.from('comments').select('*').eq('post_id',id).order('created_at');if(error){list.textContent=error.message;return;}list.innerHTML=(data||[]).map(c=>'<div class="comment">'+escapeHtml(c.content)+'</div>').join('')||'<div class="muted small">No comments yet.</div>';}}
-async function addComment(id){const input=$('comment-input-'+id),content=input.value.trim();if(!content)return;const {error}=await sb.from('comments').insert({post_id:id,user_id:currentUser.id,content});if(error){alert(error.message);return;}input.value='';const box=$('comments-'+id);box.classList.remove('hidden');const list=box.querySelector('.comment-list');const {data}=await sb.from('comments').select('*').eq('post_id',id).order('created_at');list.innerHTML=(data||[]).map(c=>'<div class=\"comment\">'+escapeHtml(c.content)+'</div>').join('')||'<div class=\"muted small\">No comments yet.</div>';}
-function filterFeed(){const q=$('searchBox').value.toLowerCase();renderPosts($('exploreFeed'),postsCache.filter(p=>(p.caption||'').toLowerCase().includes(q)));}
-function setTab(tab){['home','explore','messages','profile','settings'].forEach(t=>$(t+'Section').classList.toggle('hidden',t!==tab));document.querySelectorAll('.bottom button[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));if(tab==='explore')filterFeed();if(tab==='profile')loadProfile();}
-document.querySelectorAll('.bottom button[data-tab]').forEach(b=>b.addEventListener('click',()=>setTab(b.dataset.tab)));function focusComposer(){setTab('home');$('postCaption').focus();window.scrollTo({top:0,behavior:'smooth'});}
-function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}function escapeAttr(s){return escapeHtml(s);}function ext(n){const e=(n.split('.').pop()||'jpg').toLowerCase();return /^[a-z0-9]{2,5}$/.test(e)?e:'jpg';}
-(async function init(){if(!configured())return;const {data:{session}}=await sb.auth.getSession();if(session){currentUser=session.user;showApp();}else showAuth();sb.auth.onAuthStateChange((_event,session)=>{if(session&&!currentUser){currentUser=session.user;showApp();}else if(!session&&currentUser){currentUser=null;showAuth('Please log in.');}});})();
-</script></body></html>
+// SUPABASE CONFIGURATION
+const SUPABASE_URL = "https://glyetyeqhgfgczqibcnr.supabase.co";
+const SUPABASE_KEY = "PASTE_SUPABASE_PUBLISHABLE_KEY_HERE";
+
+let db = null;
+let currentUser = null;
+let allPosts = [];
+
+if (SUPABASE_KEY !== "PASTE_SUPABASE_PUBLISHABLE_KEY_HERE" && window.supabase) {
+  db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  startApp();
+} else {
+  setStatus("Supabase key add karne ke baad website connect hogi.");
+}
+
+function setStatus(message) {
+  document.getElementById("status").textContent = message;
+}
+
+function showAuth() {
+  document.getElementById("auth").classList.toggle("hidden");
+  document.getElementById("auth").scrollIntoView({behavior:"smooth"});
+}
+
+async function startApp() {
+  const {data:{session}} = await db.auth.getSession();
+  currentUser = session?.user || null;
+  await updateUser();
+  await loadPosts();
+
+  db.auth.onAuthStateChange(async (_event, session) => {
+    currentUser = session?.user || null;
+    await updateUser();
+    await loadPosts();
+  });
+}
+
+async function signUp() {
+  if (!db) return setStatus("Supabase key add karo.");
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const username = document.getElementById("username").value.trim();
+
+  if (!email || password.length < 6 || !username) {
+    return setStatus("Email, username aur minimum 6-character password bharo.");
+  }
+
+  const {data,error} = await db.auth.signUp({
+    email,password,
+    options:{data:{username}}
+  });
+
+  if (error) return setStatus(error.message);
+  if (data.user && data.session) {
+    currentUser = data.user;
+    await saveProfile();
+  }
+  setStatus("Signup request successful. Email verification check karo.");
+}
+
+async function signIn() {
+  if (!db) return setStatus("Supabase key add karo.");
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+
+  const {error} = await db.auth.signInWithPassword({email,password});
+  if (error) return setStatus(error.message);
+  setStatus("Login successful!");
+}
+
+async function signOut() {
+  if (!db) return;
+  const {error} = await db.auth.signOut();
+  if (error) return setStatus(error.message);
+  currentUser = null;
+  setStatus("Logged out.");
+}
+
+async function updateUser() {
+  document.getElementById("welcome").textContent =
+    currentUser ? (currentUser.user_metadata?.username || "SOCIAL X Member") : "Welcome to SOCIAL X";
+
+  document.getElementById("userEmail").textContent =
+    currentUser ? currentUser.email : "Login to start sharing";
+
+  if (!currentUser || !db) return;
+
+  const {data} = await db.from("profiles")
+    .select("*").eq("id",currentUser.id).maybeSingle();
+
+  if (data) {
+    document.getElementById("displayName").value = data.display_name || "";
+    document.getElementById("bio").value = data.bio || "";
+  }
+}
+
+async function saveProfile() {
+  if (!db || !currentUser) return setStatus("Pehle login karo.");
+
+  const username = currentUser.user_metadata?.username ||
+    currentUser.email.split("@")[0];
+
+  const profile = {
+    id:currentUser.id,
+    username,
+    display_name:document.getElementById("displayName").value.trim() || username,
+    bio:document.getElementById("bio").value.trim()
+  };
+
+  const {error} = await db.from("profiles").upsert(profile);
+  setStatus(error ? error.message : "Profile saved!");
+}
+
+async function createPost() {
+  if (!db || !currentUser) return setStatus("Post karne ke liye login karo.");
+
+  const caption = document.getElementById("caption").value.trim();
+  const file = document.getElementById("photo").files[0];
+  let media_url = null;
+  let media_type = "text";
+
+  if (!caption && !file) return setStatus("Caption ya photo add karo.");
+
+  if (file) {
+    if (!file.type.startsWith("image/")) return setStatus("Please image select karo.");
+    if (file.size > 8 * 1024 * 1024) return setStatus("Image 8 MB se chhoti honi chahiye.");
+
+    const ext = file.name.split(".").pop().toLowerCase();
+    const path = currentUser.id + "/" + Date.now() + "." + ext;
+
+    const {error:uploadError} = await db.storage
+      .from("post-media").upload(path,file,{upsert:false});
+
+    if (uploadError) return setStatus("Photo upload failed: " + uploadError.message);
+
+    const {data} = db.storage.from("post-media").getPublicUrl(path);
+    media_url = data.publicUrl;
+    media_type = "image";
+  }
+
+  const {error} = await db.from("posts").insert({
+    user_id:currentUser.id,
+    caption,
+    media_url,
+    media_type
+  });
+
+  if (error) return setStatus("Post failed: " + error.message);
+
+  document.getElementById("caption").value = "";
+  document.getElementById("photo").value = "";
+  setStatus("Your post is published!");
+  await loadPosts();
+}
+
+async function loadPosts() {
+  if (!db) return;
+  const feed = document.getElementById("feed");
+  feed.innerHTML = '<div class="card">Loading posts...</div>';
+
+  const {data,error} = await db.from("posts")
+    .select("*").order("created_at",{ascending:false}).limit(50);
+
+  if (error) {
+    feed.innerHTML = '<div class="card">Feed error: ' + escapeHTML(error.message) + '</div>';
+    return;
+  }
+
+  allPosts = data || [];
+  renderPosts(allPosts);
+}
+
+function renderPosts(posts) {
+  const feed = document.getElementById("feed");
+  feed.innerHTML = "";
+
+  if (!posts.length) {
+    feed.innerHTML = '<div class="card">No posts yet. Be the first to share!</div>';
+    return;
+  }
+
+  posts.forEach(post => {
+    const card = document.createElement("article");
+    card.className = "card";
+
+    const image = post.media_url
+      ? `<img src="${escapeHTML(post.media_url)}" alt="Post image">` : "";
+
+    card.innerHTML = `
+      <div class="row">
+        <div class="avatar">X</div>
+        <div><b>${escapeHTML(post.user_id === currentUser?.id ? "You" : "SOCIAL X Member")}</b>
+        <div class="muted">${post.created_at ? new Date(post.created_at).toLocaleString() : ""}</div></div>
+      </div>
+      <p>${escapeHTML(post.caption || "")}</p>
+      ${image}
+      <hr>
+      <div class="row">
+        <button class="likeButton">♡ Like</button>
+        <button class="commentButton">Comment</button>
+      </div>
+      <div class="comments"></div>
+    `;
+
+    card.querySelector(".likeButton").onclick = () => toggleLike(post.id);
+    card.querySelector(".commentButton").onclick = () => addComment(post.id,card);
+    feed.appendChild(card);
+    loadComments(post.id,card);
+  });
+}
+
+async function toggleLike(postId) {
+  if (!currentUser) return setStatus("Like karne ke liye login karo.");
+
+  const {data:existing,error:findError} = await db.from("likes")
+    .select("id").eq("post_id",postId).eq("user_id",currentUser.id).maybeSingle();
+
+  if (findError) return setStatus(findError.message);
+
+  if (existing) {
+    const {error} = await db.from("likes").delete().eq("id",existing.id);
+    if (error) return setStatus(error.message);
+  } else {
+    const {error} = await db.from("likes").insert({
+      post_id:postId,user_id:currentUser.id
+    });
+    if (error) return setStatus(error.message);
+  }
+
+  setStatus("Like updated.");
+}
+
+async function loadComments(postId,card) {
+  const box = card.querySelector(".comments");
+  const {data,error} = await db.from("comments")
+    .select("*").eq("post_id",postId)
+    .order("created_at",{ascending:true}).limit(20);
+
+  if (error) {
+    box.textContent = "Comments unavailable.";
+    return;
+  }
+
+  box.innerHTML = "";
+  (data || []).forEach(comment => {
+    const p = document.createElement("p");
+    p.className = "muted";
+    p.textContent = comment.content;
+    box.appendChild(p);
+  });
+}
+
+async function addComment(postId,card) {
+  if (!currentUser) return setStatus("Comment ke liye login karo.");
+
+  const content = prompt("Write your comment:");
+  if (!content || !content.trim()) return;
+
+  const {error} = await db.from("comments").insert({
+    post_id:postId,
+    user_id:currentUser.id,
+    content:content.trim()
+  });
+
+  if (error) return setStatus(error.message);
+  await loadComments(postId,card);
+}
+
+function filterPosts() {
+  const query = document.getElementById("search").value.toLowerCase();
+  renderPosts(allPosts.filter(p => (p.caption || "").toLowerCase().includes(query)));
+}
+
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  })[c]);
+}
+
+function goHome() {
+  window.scrollTo({top:0,behavior:"smooth"});
+  loadPosts();
+}
+
+function showMessages() {
+  setStatus("Messaging feature ka backend abhi connect nahi hua hai.");
+}
+</script>
+</body>
+</html>
